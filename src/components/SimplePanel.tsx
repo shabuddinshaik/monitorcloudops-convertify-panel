@@ -86,26 +86,19 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
       [column]: value,
     }));
   };
-  
+
   const applyColumnFilters = (data: Row[]) => {
-    if (Object.keys(columnFilters).length === 0) {
-      return data;  // Return the data as is if no filters are applied
-    }
-  
+    if (Object.keys(columnFilters).length === 0) {return data;}
+
     return data.filter((row) => {
       return Object.keys(columnFilters).every((column) => {
-        // Get the filter value for the column
-        const filterValue = columnFilters[column]?.toLowerCase() || '';
-        
-        // Get the corresponding value in the row
+        const filterValue = columnFilters[column].toLowerCase();
         const rowValue = row[column] ? row[column].toString().toLowerCase() : '';
-        
-        // Check if the row's value contains the filter value
         return rowValue.includes(filterValue);
       });
     });
   };
-  
+
   const filteredData = applyColumnFilters(currentData);
 
   return (
