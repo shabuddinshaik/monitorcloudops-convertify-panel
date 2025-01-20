@@ -67,7 +67,24 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
   });
 
   const pageCount = Math.ceil(transformedData.length / rowsPerPage);
-  const currentData = transformedData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+  // Apply filters
+  const applyColumnFilters = (data: Row[]) => {
+    if (Object.keys(columnFilters).length === 0) return data;
+
+    return data.filter((row) => {
+      return Object.keys(columnFilters).every((column) => {
+        const filterValue = columnFilters[column].toLowerCase();
+        const rowValue = row[column] ? row[column].toString().toLowerCase() : '';
+        return rowValue.includes(filterValue);
+      });
+    });
+  };
+
+  // Paginate and filter data
+  const filteredData = applyColumnFilters(
+    transformedData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
+  );
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
@@ -87,22 +104,6 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
     }));
   };
 
-  const applyColumnFilters = (data: Row[]) => {
-    if (Object.keys(columnFilters).length === 0) {
-      return data;
-    }
-    
-    return data.filter((row) => {
-      return Object.keys(columnFilters).every((column) => {
-        const filterValue = columnFilters[column].toLowerCase();
-        const rowValue = row[column] ? row[column].toString().toLowerCase() : '';
-        return rowValue.includes(filterValue);
-      });
-    });
-  };
-
-  const filteredData = applyColumnFilters(currentData);
-
   return (
     <div style={{ width, height, overflow: 'auto', padding: '10px', fontFamily: 'Arial, sans-serif' }}>
       <table ref={tableRef} style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', boxSizing: 'border-box' }}>
@@ -112,7 +113,7 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
               style={{
                 padding: '12px',
                 border: '1px solid #ddd',
-                backgroundColor: '#1e73be',  // Darker header color
+                backgroundColor: '#1e73be', // Darker header color
                 color: 'white',
                 textAlign: 'center',
               }}
@@ -123,7 +124,7 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
               style={{
                 padding: '12px',
                 border: '1px solid #ddd',
-                backgroundColor: '#1e73be',  // Darker header color
+                backgroundColor: '#1e73be', // Darker header color
                 color: 'white',
                 textAlign: 'center',
               }}
@@ -135,7 +136,7 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
                 style={{
                   padding: '12px',
                   border: '1px solid #ddd',
-                  backgroundColor: '#1e73be',  // Darker header color
+                  backgroundColor: '#1e73be', // Darker header color
                   color: 'white',
                   textAlign: 'center',
                 }}
@@ -148,7 +149,7 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
                 style={{
                   padding: '12px',
                   border: '1px solid #ddd',
-                  backgroundColor: '#1e73be',  // Darker header color
+                  backgroundColor: '#1e73be', // Darker header color
                   color: 'white',
                   textAlign: 'center',
                 }}
@@ -162,7 +163,7 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
                 style={{
                   padding: '12px',
                   border: '1px solid #ddd',
-                  backgroundColor: '#1e73be',  // Darker header color
+                  backgroundColor: '#1e73be', // Darker header color
                   color: 'white',
                   minWidth: columnWidths[index] || 'auto',
                   cursor: 'col-resize',
