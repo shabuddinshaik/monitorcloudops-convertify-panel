@@ -88,7 +88,7 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
   };
 
   const applyColumnFilters = (data: Row[]) => {
-    if (Object.keys(columnFilters).length === 0) return data;
+    if (Object.keys(columnFilters).length === 0) {return data;}
 
     return data.filter((row) => {
       return Object.keys(columnFilters).every((column) => {
@@ -243,4 +243,3 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
     </div>
   );
 };
-
