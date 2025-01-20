@@ -104,8 +104,21 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
     }));
   };
 
+  // Check for "No Data"
+  if (!data || !data.series || data.series.length === 0) {
+    return (
+      <div style={{ width, height, padding: '10px', fontFamily: 'Arial, sans-serif' }}>
+        No data
+      </div>
+    );
+  }
+
   return (
     <div style={{ width, height, overflow: 'auto', padding: '10px', fontFamily: 'Arial, sans-serif' }}>
+      <div style={{ marginBottom: '10px' }}>
+        {/* Display circle when data is present */}
+        <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'green' }}></div>
+      </div>
       <table ref={tableRef} style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', boxSizing: 'border-box' }}>
         <thead>
           <tr>
