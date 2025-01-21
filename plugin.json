@@ -1,0 +1,32 @@
+{
+    "$schema": "https://raw.githubusercontent.com/grafana/grafana/main/docs/sources/developers/plugins/plugin.schema.json",
+    "type": "panel",  // Type of plugin, in this case a panel plugin
+    "name": "Convertify",
+    "id": "monitorcloudops-convertify-panel",  // Make sure this matches your organization slug
+    "info": {
+      "keywords": ["panel", "convert", "data"],  // Keywords to help identify the plugin
+      "description": "A panel for converting data formats",
+      "author": {
+        "name": "Monitor Cloud Ops"
+      },
+      "logos": {
+        "small": "img/logo.svg",  // Path to your logo
+        "large": "img/logo.svg"
+      },
+      "links": [],
+      "screenshots": [],
+      "version": "1.0.0",  // Your plugin's version
+      "updated": "2025-01-21"
+    },
+    "dependencies": {
+      "grafanaDependency": ">=10.4.0",  // The Grafana version this plugin supports
+      "plugins": []
+    },
+    "panel": {
+      "pluginId": "monitorcloudops-convertify-panel",
+      "title": "Convertify Panel",
+      "description": "A panel for visualizing and converting data",
+      "type": "panel"
+    }
+  }
+  
