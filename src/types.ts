@@ -4,8 +4,6 @@ export type ConversionType = 'binary' | 'hexadecimal' | 'all';
 
 export interface SimpleOptions {
   text: string;
-  showSeriesCount: boolean;
-  seriesCountSize: 'small' | 'medium' | 'large';  // Corrected or defined series size
   conversionType: ConversionType;
   showOriginalValues: boolean;
   textColor: string;  // Text color property
