@@ -68,7 +68,6 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
 
   const pageCount = Math.ceil(transformedData.length / rowsPerPage);
 
-  // Apply filters
   const applyColumnFilters = (data: Row[]) => {
     if (Object.keys(columnFilters).length === 0) return data;
 
@@ -81,7 +80,6 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
     });
   };
 
-  // Paginate and filter data
   const filteredData = applyColumnFilters(
     transformedData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
   );
@@ -104,7 +102,7 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
     }));
   };
 
-  // Check for "No Data"
+  
   if (!data || !data.series || data.series.length === 0) {
     return (
       <div style={{ width, height, padding: '10px', fontFamily: 'Arial, sans-serif' }}>
@@ -115,147 +113,147 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
 
   return (
     <div style={{ width, height, overflow: 'auto', padding: '10px', fontFamily: 'Arial, sans-serif' }}>
-      <div style={{ marginBottom: '10px' }}>
-        {/* Display circle when data is present */}
-        <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'green' }}></div>
-      </div>
-      <table ref={tableRef} style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', boxSizing: 'border-box' }}>
-        <thead>
-          <tr>
-            <th
+    <div style={{ marginBottom: '10px' }}>
+    {/* Display circle when data is present */}
+    <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'green' }}></div>
+  </div>
+  <table ref={tableRef} style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', boxSizing: 'border-box' }}>
+    <thead>
+      <tr>
+        <th
+          style={{
+            padding: '12px',
+            border: '1px solid #ddd',
+            backgroundColor: '#1e73be', // Darker header color
+            color: 'white',
+            textAlign: 'center',
+          }}
+        >
+          Timestamp
+        </th>
+        <th
+          style={{
+            padding: '12px',
+            border: '1px solid #ddd',
+            backgroundColor: '#1e73be', // Darker header color
+            color: 'white',
+            textAlign: 'center',
+          }}
+        >
+          Value
+        </th>
+        {options.conversionType === 'binary' || options.conversionType === 'all' ? (
+          <th
+            style={{
+              padding: '12px',
+              border: '1px solid #ddd',
+              backgroundColor: '#1e73be', // Darker header color
+              color: 'white',
+              textAlign: 'center',
+            }}
+          >
+            Binary
+          </th>
+        ) : null}
+        {options.conversionType === 'hexadecimal' || options.conversionType === 'all' ? (
+          <th
+            style={{
+              padding: '12px',
+              border: '1px solid #ddd',
+              backgroundColor: '#1e73be', // Darker header color
+              color: 'white',
+              textAlign: 'center',
+            }}
+          >
+            Hex
+          </th>
+        ) : null}
+        {excelColumns.map((col, index) => (
+          <th
+            key={col.bit}
+            style={{
+              padding: '12px',
+              border: '1px solid #ddd',
+              backgroundColor: '#1e73be', // Darker header color
+              color: 'white',
+              minWidth: columnWidths[index] || 'auto',
+              cursor: 'col-resize',
+              textAlign: 'center',
+            }}
+            onMouseDown={(e) => {
+              const startX = e.pageX;
+              const startWidth = tableRef.current?.rows[0].cells[index].offsetWidth || 0;
+              const onMouseMove = (moveEvent: MouseEvent) => {
+                const newWidth = startWidth + (moveEvent.pageX - startX);
+                handleColumnResize(index, newWidth);
+              };
+              const onMouseUp = () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+              };
+              document.addEventListener('mousemove', onMouseMove);
+              document.addEventListener('mouseup', onMouseUp);
+            }}
+          >
+            {col.name}
+            {/* Excel-like filter dropdown */}
+            <select
+              onChange={(e) => handleColumnFilterChange(col.name, e.target.value)}
               style={{
-                padding: '12px',
-                border: '1px solid #ddd',
-                backgroundColor: '#1e73be', // Darker header color
-                color: 'white',
-                textAlign: 'center',
+                marginTop: '5px',
+                padding: '5px',
+                fontSize: '12px',
+                borderRadius: '4px',
+                backgroundColor: '#f4f6f9',
               }}
             >
-              Timestamp
-            </th>
-            <th
-              style={{
-                padding: '12px',
-                border: '1px solid #ddd',
-                backgroundColor: '#1e73be', // Darker header color
-                color: 'white',
-                textAlign: 'center',
-              }}
-            >
-              Value
-            </th>
-            {options.conversionType === 'binary' || options.conversionType === 'all' ? (
-              <th
-                style={{
-                  padding: '12px',
-                  border: '1px solid #ddd',
-                  backgroundColor: '#1e73be', // Darker header color
-                  color: 'white',
-                  textAlign: 'center',
-                }}
-              >
-                Binary
-              </th>
-            ) : null}
-            {options.conversionType === 'hexadecimal' || options.conversionType === 'all' ? (
-              <th
-                style={{
-                  padding: '12px',
-                  border: '1px solid #ddd',
-                  backgroundColor: '#1e73be', // Darker header color
-                  color: 'white',
-                  textAlign: 'center',
-                }}
-              >
-                Hex
-              </th>
-            ) : null}
-            {excelColumns.map((col, index) => (
-              <th
-                key={col.bit}
-                style={{
-                  padding: '12px',
-                  border: '1px solid #ddd',
-                  backgroundColor: '#1e73be', // Darker header color
-                  color: 'white',
-                  minWidth: columnWidths[index] || 'auto',
-                  cursor: 'col-resize',
-                  textAlign: 'center',
-                }}
-                onMouseDown={(e) => {
-                  const startX = e.pageX;
-                  const startWidth = tableRef.current?.rows[0].cells[index].offsetWidth || 0;
-                  const onMouseMove = (moveEvent: MouseEvent) => {
-                    const newWidth = startWidth + (moveEvent.pageX - startX);
-                    handleColumnResize(index, newWidth);
-                  };
-                  const onMouseUp = () => {
-                    document.removeEventListener('mousemove', onMouseMove);
-                    document.removeEventListener('mouseup', onMouseUp);
-                  };
-                  document.addEventListener('mousemove', onMouseMove);
-                  document.addEventListener('mouseup', onMouseUp);
-                }}
-              >
-                {col.name}
-                {/* Excel-like filter dropdown */}
-                <select
-                  onChange={(e) => handleColumnFilterChange(col.name, e.target.value)}
-                  style={{
-                    marginTop: '5px',
-                    padding: '5px',
-                    fontSize: '12px',
-                    borderRadius: '4px',
-                    backgroundColor: '#f4f6f9',
-                  }}
-                >
-                  <option value="">All</option>
-                  {Array.from(new Set(transformedData.map((row) => row[col.name]))).map((uniqueValue, i) => (
-                    <option key={i} value={uniqueValue}>
-                      {uniqueValue}
-                    </option>
-                  ))}
-                </select>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.map((row, index) => (
-            <tr key={index}>
-              <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.timestamp}</td>
-              <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.value}</td>
-              {row.binary ? <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.binary}</td> : null}
-              {row.hex ? <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.hex}</td> : null}
-              {excelColumns.map((col) => (
-                <td key={col.bit} style={{ padding: '12px', border: '1px solid #ddd' }}>
-                  {row[col.name]}
-                </td>
+              <option value="">All</option>
+              {Array.from(new Set(transformedData.map((row) => row[col.name]))).map((uniqueValue, i) => (
+                <option key={i} value={uniqueValue}>
+                  {uniqueValue}
+                </option>
               ))}
-            </tr>
+            </select>
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {filteredData.map((row, index) => (
+        <tr key={index}>
+          <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.timestamp}</td>
+          <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.value}</td>
+          {row.binary ? <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.binary}</td> : null}
+          {row.hex ? <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.hex}</td> : null}
+          {excelColumns.map((col) => (
+            <td key={col.bit} style={{ padding: '12px', border: '1px solid #ddd' }}>
+              {row[col.name]}
+            </td>
           ))}
-        </tbody>
-      </table>
+        </tr>
+      ))}
+    </tbody>
+  </table>
 
-      <div style={{ paddingTop: '10px', textAlign: 'center', marginTop: '10px' }}>
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          style={{ padding: '5px 10px', marginRight: '10px', backgroundColor: '#1e73be', color: 'white', border: 'none', cursor: 'pointer' }}
-        >
-          Previous
-        </button>
-        <span style={{ padding: '0 10px', fontWeight: 'bold' }}>
-          Page {currentPage} of {pageCount}
-        </span>
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === pageCount}
-          style={{ padding: '5px 10px', marginLeft: '10px', backgroundColor: '#1e73be', color: 'white', border: 'none', cursor: 'pointer' }}
-        >
-          Next
-        </button>
-      </div>
-    </div>
-  );
+  <div style={{ paddingTop: '10px', textAlign: 'center', marginTop: '10px' }}>
+    <button
+      onClick={() => handlePageChange(currentPage - 1)}
+      disabled={currentPage === 1}
+      style={{ padding: '5px 10px', marginRight: '10px', backgroundColor: '#1e73be', color: 'white', border: 'none', cursor: 'pointer' }}
+    >
+      Previous
+    </button>
+    <span style={{ padding: '0 10px', fontWeight: 'bold' }}>
+      Page {currentPage} of {pageCount}
+    </span>
+    <button
+      onClick={() => handlePageChange(currentPage + 1)}
+      disabled={currentPage === pageCount}
+      style={{ padding: '5px 10px', marginLeft: '10px', backgroundColor: '#1e73be', color: 'white', border: 'none', cursor: 'pointer' }}
+    >
+      Next
+    </button>
+  </div>
+</div>
+);
 };
