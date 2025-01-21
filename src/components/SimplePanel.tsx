@@ -223,13 +223,13 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
         <tbody>
           {filteredData.map((row, index) => (
             <tr key={index}>
-              <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.timestamp}</td>
-              <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.value}</td>
+              <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.timestamp || 'No Timestamp'}</td>
+              <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.value || 'No Value'}</td>
               {row.binary ? <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.binary}</td> : null}
               {row.hex ? <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.hex}</td> : null}
               {excelColumns.map((col) => (
                 <td key={col.bit} style={{ padding: '12px', border: '1px solid #ddd' }}>
-                  {row[col.name]}
+                  {row[col.name] || 'No Data'}
                 </td>
               ))}
             </tr>
@@ -237,21 +237,34 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
         </tbody>
       </table>
 
-      <div style={{ paddingTop: '10px', textAlign: 'center', marginTop: '10px' }}>
+      <div style={{ paddingTop: '10px', display: 'flex', justifyContent: 'center' }}>
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          style={{ padding: '5px 10px', marginRight: '10px', backgroundColor: '#1e73be', color: 'white', border: 'none', cursor: 'pointer' }}
+          style={{
+            padding: '10px',
+            margin: '5px',
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            border: 'none',
+            cursor: 'pointer',
+            borderRadius: '4px',
+          }}
         >
           Previous
         </button>
-        <span style={{ padding: '0 10px', fontWeight: 'bold' }}>
-          Page {currentPage} of {pageCount}
-        </span>
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === pageCount}
-          style={{ padding: '5px 10px', marginLeft: '10px', backgroundColor: '#1e73be', color: 'white', border: 'none', cursor: 'pointer' }}
+          style={{
+            padding: '10px',
+            margin: '5px',
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            border: 'none',
+            cursor: 'pointer',
+            borderRadius: '4px',
+          }}
         >
           Next
         </button>
@@ -259,3 +272,4 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
     </div>
   );
 };
+
