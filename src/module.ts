@@ -10,11 +10,6 @@ export const plugin = new PanelPlugin<SimpleOptions>(SimplePanel).setPanelOption
       description: 'Description of panel option',
       defaultValue: 'Default value of text input option',
     })
-    .addBooleanSwitch({
-      path: 'showSeriesCount',
-      name: 'Show series counter',
-      defaultValue: false,
-    })
     .addRadio({
       path: 'conversionType',
       name: 'Conversion Type',
@@ -55,4 +50,3 @@ export const plugin = new PanelPlugin<SimpleOptions>(SimplePanel).setPanelOption
       },
     });
 });
-
