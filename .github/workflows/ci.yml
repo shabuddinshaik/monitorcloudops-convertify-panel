@@ -15,7 +15,7 @@ permissions: read-all
 jobs:
   build:
     name: Build, lint and unit tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       plugin-id: ${{ steps.metadata.outputs.plugin-id }}
       plugin-version: ${{ steps.metadata.outputs.plugin-version }}
