@@ -19,16 +19,9 @@ export const plugin = new PanelPlugin<SimpleOptions>(SimplePanel).setPanelOption
         options: [
           { value: 'binary', label: 'Binary' },
           { value: 'hexadecimal', label: 'Hexadecimal' },
-          { value: 'decimal', label: 'Decimal' },
           { value: 'all', label: 'All' }, // Add option to show all conversions
         ],
       },
-    })
-    .addBooleanSwitch({
-      path: 'showOriginalValues',
-      name: 'Show Original Values',
-      description: 'Toggle to show original values alongside converted values',
-      defaultValue: true,
     })
     .addColorPicker({
       path: 'textColor',
