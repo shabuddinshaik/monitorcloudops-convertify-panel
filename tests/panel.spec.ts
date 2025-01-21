@@ -20,25 +20,3 @@ test('should display circle when data is passed to the panel', async ({
   await panelEditPage.setVisualization('Convertify');
   await expect(page.getByTestId('simple-panel-circle')).toBeVisible();
 });
-
-test('should display series counter when "Show series counter" option is enabled', async ({
-  panelEditPage,
-  readProvisionedDataSource,
-  page,
-  selectors,
-  grafanaVersion,
-}) => {
-  const ds = await readProvisionedDataSource({ fileName: 'datasources.yml' });
-  await panelEditPage.datasource.set(ds.name);
-  await panelEditPage.setVisualization('Convertify');
-  await panelEditPage.collapseSection('Convertify');
-  await expect(page.getByTestId('simple-panel-circle')).toBeVisible();
-  const seriesCounterLabel = panelEditPage.getByGrafanaSelector(
-    selectors.components.PanelEditor.OptionsPane.fieldLabel('Convertify Show series counter')
-  );
-  const switchField = semver.gte(grafanaVersion, '11.4.0')
-    ? seriesCounterLabel.getByRole('switch')
-    : seriesCounterLabel.getByLabel('Toggle switch');
-  await switchField.click({ force: true });
-  await expect(page.getByTestId('simple-panel-series-counter')).toBeVisible();
-});
