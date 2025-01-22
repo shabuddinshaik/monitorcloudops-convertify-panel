@@ -4,22 +4,25 @@
   "name": "Convertify",
   "id": "monitorcloudops-convertify-panel",
   "info": {
-    "keywords": ["panel"],
-    "description": "",
-    "author": {
-      "name": "Monitor cloud ops"
-    },
-    "logos": {
-      "small": "img/logo.svg",
-      "large": "img/logo.svg"
-    },
-    "links": [],
-    "screenshots": [],
-    "version": "%VERSION%",
-    "updated": "%TODAY%"
+      "keywords": [
+          "panel"
+      ],
+      "description": "A plugin that integrates with Grafana to provide real-time data visualization from X source.",
+      "author": {
+          "name": "Monitor cloud ops"
+      },
+      "logos": {
+          "small": "img/logo.svg",
+          "large": "img/logo.svg"
+      },
+      "links": [],
+      "screenshots": [],
+      "version": "1.0.0",
+      "updated": "2025-01-21"
   },
   "dependencies": {
-    "grafanaDependency": ">=10.4.0",
-    "plugins": []
-  }
+      "grafanaDependency": ">=10.4.0",
+      "plugins": []
+  },
+  "buildMode": "development"
 }
