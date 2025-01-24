@@ -1,0 +1,41 @@
+{
+    "$schema": "https://raw.githubusercontent.com/grafana/grafana/main/docs/sources/developers/plugins/plugin.schema.json",
+    "type": "panel",
+    "name": "Convertify",
+    "id": "monitorcloudops-convertify-panel",
+    "info": {
+        "keywords": [
+            "panel",
+            "binary",
+            "hexadecimal",
+            "bitfields",
+            "time-series"
+        ],
+        "description": "Convertify is a Grafana panel plugin for visualizing time-series data in binary or hexadecimal format, with support for bitfield-based analysis and column filtering. Perfect for monitoring and analyzing data from industrial systems, IoT devices, or control systems.",
+        "author": {
+            "name": "Monitor Cloud Ops"
+        },
+        "logos": {
+            "small": "img/logo.svg",
+            "large": "img/logo.svg"
+        },
+        "links": [],
+        "screenshots": [
+            {
+                "name": "Panel Screenshot 1",
+                "path": "img/screenshot1.png"
+            },
+            {
+                "name": "Panel Screenshot 2",
+                "path": "img/screenshot2.png"
+            }
+        ],
+        "version": "1.0.0",
+        "updated": "2025-01-21"
+    },
+    "dependencies": {
+        "grafanaDependency": ">=10.4.0",
+        "plugins": []
+    },
+    "buildMode": "production"
+}
