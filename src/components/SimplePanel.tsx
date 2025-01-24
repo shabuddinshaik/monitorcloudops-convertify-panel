@@ -115,6 +115,15 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
     }));
   };
 
+  // Check for "No Data"
+  if (!data || !data.series || data.series.length === 0) {
+    return (
+      <div style={{ width, height, padding: '10px', fontFamily: 'Arial, sans-serif' }}>
+        No data
+      </div>
+    );
+  }
+
   return (
     <div style={{ width, height, overflow: 'auto', padding: '5px', fontFamily: 'Arial, sans-serif' }}>
       <table
