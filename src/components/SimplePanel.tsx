@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { PanelProps } from '@grafana/data';
 import { SimpleOptions } from '../types';
 
@@ -33,20 +33,29 @@ type Row = {
 
 export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [columnWidths, setColumnWidths] = useState<any>({});
   const [columnFilters, setColumnFilters] = useState<any>({});
   const rowsPerPage = 10;
-  const tableRef = useRef<HTMLTableElement>(null);
 
   const toBinary = (value: number, bits = 32): string => value.toString(2).padStart(bits, '0');
   const toHex = (value: number): string => '0x' + value.toString(16).toUpperCase();
 
   const series = data.series[0];
-  const timeField = series?.fields.find((field) => field.name === 'time');
-  const valueField = series?.fields.find((field) => field.name === 'value');
 
-  const timeValues = timeField ? Array.from(timeField.values) : [];
-  const valueValues = valueField ? Array.from(valueField.values) : [];
+  const timeField = series?.fields.find((field) => field.type === 'time');
+  const valueField =
+    series?.fields.find((field) => field.name === options.selectedField) ||
+    series?.fields.find((field) => field.type === 'number');
+
+  if (!timeField || !valueField) {
+    return (
+      <div style={{ width, height, padding: '10px', fontFamily: 'Arial, sans-serif' }}>
+        No valid time or value field found.
+      </div>
+    );
+  }
+
+  const timeValues = Array.from(timeField.values);
+  const valueValues = Array.from(valueField.values);
 
   const transformedData: Row[] = timeValues.map((time, index) => {
     const value = valueValues[index];
@@ -66,35 +75,37 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
     };
   });
 
-  const pageCount = Math.ceil(transformedData.length / rowsPerPage);
+  // Check if transformed data is empty and display "No Data" message
+  if (transformedData.length === 0) {
+    return (
+      <div style={{ width, height, padding: '10px', fontFamily: 'Arial, sans-serif' }}>
+        No Data
+      </div>
+    );
+  }
 
-  // Apply filters
+  const uniqueColumnValues = (column: string) => {
+    return [...new Set(transformedData.map((row) => row[column]))];
+  };
+
   const applyColumnFilters = (data: Row[]) => {
     if (Object.keys(columnFilters).length === 0) return data;
 
     return data.filter((row) => {
       return Object.keys(columnFilters).every((column) => {
-        const filterValue = columnFilters[column].toLowerCase();
-        const rowValue = row[column] ? row[column].toString().toLowerCase() : '';
-        return rowValue.includes(filterValue);
+        const filterValue = columnFilters[column];
+        if (!filterValue || filterValue === 'All') return true;
+        return row[column]?.toString() === filterValue;
       });
     });
   };
 
-  // Paginate and filter data
   const filteredData = applyColumnFilters(
     transformedData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
   );
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
-  };
-
-  const handleColumnResize = (index: number, width: number) => {
-    setColumnWidths((prevWidths: any) => ({
-      ...prevWidths,
-      [index]: width,
-    }));
   };
 
   const handleColumnFilterChange = (column: string, value: string) => {
@@ -104,166 +115,114 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
     }));
   };
 
-  // Check for "No Data"
-  if (!data || !data.series || data.series.length === 0) {
-    return (
-      <div style={{ width, height, padding: '10px', fontFamily: 'Arial, sans-serif' }}>
-        No data
-      </div>
-    );
-  }
-
   return (
-    <div style={{ width, height, overflow: 'auto', padding: '10px', fontFamily: 'Arial, sans-serif' }}>
-      <div style={{ marginBottom: '10px' }}>
-        {/* Display circle when data is present */}
-        <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'green' }}></div>
-      </div>
-      <table ref={tableRef} style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', boxSizing: 'border-box' }}>
+    <div style={{ width, height, overflow: 'auto', padding: '5px', fontFamily: 'Arial, sans-serif' }}>
+      <table
+        style={{
+          width: '100%',
+          borderCollapse: 'collapse',
+          textAlign: 'left',
+          fontFamily: 'Arial, sans-serif',
+          border: '1px solid #ddd',
+        }}
+      >
         <thead>
           <tr>
-            <th
-              style={{
-                padding: '12px',
-                border: '1px solid #ddd',
-                backgroundColor: '#1e73be', // Darker header color
-                color: 'white',
-                textAlign: 'center',
-              }}
-            >
-              Timestamp
-            </th>
-            <th
-              style={{
-                padding: '12px',
-                border: '1px solid #ddd',
-                backgroundColor: '#1e73be', // Darker header color
-                color: 'white',
-                textAlign: 'center',
-              }}
-            >
-              Value
-            </th>
+            <th style={{ padding: '5px', backgroundColor: '#0056b3', color: '#fff', fontSize: '12px', minWidth: '160px' }}>Timestamp</th>
+            <th style={{ padding: '5px', backgroundColor: '#0056b3', color: '#fff', fontSize: '12px' }}>Value</th>
             {options.conversionType === 'binary' || options.conversionType === 'all' ? (
-              <th
-                style={{
-                  padding: '12px',
-                  border: '1px solid #ddd',
-                  backgroundColor: '#1e73be', // Darker header color
-                  color: 'white',
-                  textAlign: 'center',
-                }}
-              >
-                Binary
-              </th>
+              <th style={{ padding: '5px', backgroundColor: '#0056b3', color: '#fff', fontSize: '12px' }}>Binary</th>
             ) : null}
             {options.conversionType === 'hexadecimal' || options.conversionType === 'all' ? (
-              <th
-                style={{
-                  padding: '12px',
-                  border: '1px solid #ddd',
-                  backgroundColor: '#1e73be', // Darker header color
-                  color: 'white',
-                  textAlign: 'center',
-                }}
-              >
-                Hex
-              </th>
+              <th style={{ padding: '5px', backgroundColor: '#0056b3', color: '#fff', fontSize: '12px' }}>Hex</th>
             ) : null}
-            {excelColumns.map((col, index) => (
-              <th
-                key={col.bit}
-                style={{
-                  padding: '12px',
-                  border: '1px solid #ddd',
-                  backgroundColor: '#1e73be', // Darker header color
-                  color: 'white',
-                  minWidth: columnWidths[index] || 'auto',
-                  cursor: 'col-resize',
-                  textAlign: 'center',
-                }}
-                onMouseDown={(e) => {
-                  const startX = e.pageX;
-                  const startWidth = tableRef.current?.rows[0].cells[index].offsetWidth || 0;
-                  const onMouseMove = (moveEvent: MouseEvent) => {
-                    const newWidth = startWidth + (moveEvent.pageX - startX);
-                    handleColumnResize(index, newWidth);
-                  };
-                  const onMouseUp = () => {
-                    document.removeEventListener('mousemove', onMouseMove);
-                    document.removeEventListener('mouseup', onMouseUp);
-                  };
-                  document.addEventListener('mousemove', onMouseMove);
-                  document.addEventListener('mouseup', onMouseUp);
-                }}
-              >
-                {col.name}
-                {/* Excel-like filter dropdown */}
-                <select
-                  onChange={(e) => handleColumnFilterChange(col.name, e.target.value)}
+            {options.showConstantColumns &&
+              excelColumns.map((col) => (
+                <th
+                  key={col.bit}
                   style={{
-                    marginTop: '5px',
-                    padding: '5px',
-                    fontSize: '12px',
-                    borderRadius: '4px',
-                    backgroundColor: '#f4f6f9',
+                    padding: '6px',
+                    backgroundColor: '#0056b3',
+                    color: '#fff',
+                    fontSize: '10px',
+                    position: 'relative',
+                    minWidth: '150px', // Adjust this value as needed
+                    textAlign: 'center',
                   }}
                 >
-                  <option value="">All</option>
-                  {Array.from(new Set(transformedData.map((row) => row[col.name]))).map((uniqueValue, i) => (
-                    <option key={i} value={uniqueValue}>
-                      {uniqueValue}
-                    </option>
-                  ))}
-                </select>
-              </th>
-            ))}
+                  {col.name}
+                  <select
+                    onChange={(e) => handleColumnFilterChange(col.name, e.target.value)}
+                    style={{
+                      marginTop: '4px',
+                      width: '90%',
+                      padding: '4px',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
+                      fontSize: '10px',
+                    }}
+                  >
+                    <option value="All">All</option>
+                    {uniqueColumnValues(col.name).map((value) => (
+                      <option key={value} value={value}>
+                        {value}
+                      </option>
+                    ))}
+                  </select>
+                </th>
+              ))}
           </tr>
         </thead>
         <tbody>
           {filteredData.map((row, index) => (
-            <tr key={index}>
-              <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.timestamp || 'No Timestamp'}</td>
-              <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.value || 'No Value'}</td>
-              {row.binary ? <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.binary}</td> : null}
-              {row.hex ? <td style={{ padding: '12px', border: '1px solid #ddd' }}>{row.hex}</td> : null}
-              {excelColumns.map((col) => (
-                <td key={col.bit} style={{ padding: '12px', border: '1px solid #ddd' }}>
-                  {row[col.name] || 'No Data'}
-                </td>
-              ))}
+            <tr key={index} style={{ borderBottom: '1px solid #ddd' }}>
+              <td style={{ padding: '6px', border: '1px solid #ddd' }}>
+                {new Date(row.timestamp).toLocaleString()}
+              </td>
+              <td style={{ padding: '6px', border: '1px solid #ddd' }}>{row.value}</td>
+              {row.binary ? <td style={{ padding: '6px', border: '1px solid #ddd' }}>{row.binary}</td> : null}
+              {row.hex ? <td style={{ padding: '6px', border: '1px solid #ddd' }}>{row.hex}</td> : null}
+              {options.showConstantColumns &&
+                excelColumns.map((col) => (
+                  <td
+                    key={col.bit}
+                    style={{
+                      padding: '6px',
+                      border: '1px solid #ddd',
+                      minWidth: '150px', // Adjust this value as needed
+                      textAlign: 'center',
+                    }}
+                  >
+                    {row[col.name]}
+                  </td>
+                ))}
             </tr>
           ))}
         </tbody>
       </table>
-
-      <div style={{ paddingTop: '10px', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ marginTop: '5px', textAlign: 'center' }}>
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
           style={{
-            padding: '10px',
             margin: '5px',
-            backgroundColor: '#4CAF50',
-            color: 'white',
+            padding: '5px 8px',
+            backgroundColor: '#0056b3',
+            color: '#fff',
             border: 'none',
-            cursor: 'pointer',
-            borderRadius: '4px',
           }}
         >
           Previous
         </button>
         <button
           onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === pageCount}
+          disabled={currentPage === Math.ceil(transformedData.length / rowsPerPage)}
           style={{
-            padding: '10px',
             margin: '5px',
-            backgroundColor: '#4CAF50',
-            color: 'white',
+            padding: '4px 6px',
+            backgroundColor: '#0056b3',
+            color: '#fff',
             border: 'none',
-            cursor: 'pointer',
-            borderRadius: '4px',
           }}
         >
           Next
@@ -272,4 +231,3 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
     </div>
   );
 };
-

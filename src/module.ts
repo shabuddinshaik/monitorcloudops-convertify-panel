@@ -4,12 +4,6 @@ import { SimplePanel } from './components/SimplePanel';
 
 export const plugin = new PanelPlugin<SimpleOptions>(SimplePanel).setPanelOptions((builder) => {
   return builder
-    .addTextInput({
-      path: 'text',
-      name: 'Simple text option',
-      description: 'Description of panel option',
-      defaultValue: 'Default value of text input option',
-    })
     .addRadio({
       path: 'conversionType',
       name: 'Conversion Type',
@@ -19,27 +13,14 @@ export const plugin = new PanelPlugin<SimpleOptions>(SimplePanel).setPanelOption
         options: [
           { value: 'binary', label: 'Binary' },
           { value: 'hexadecimal', label: 'Hexadecimal' },
-          { value: 'all', label: 'All' }, // Add option to show all conversions
+          { value: 'all', label: 'All' },
         ],
       },
     })
-    .addColorPicker({
-      path: 'textColor',
-      name: 'Text Color',
-      defaultValue: '#000000',  // Default color is black
-      description: 'Select the text color for the panel',
-    })
-    .addSelect({
-      path: 'selectedField',
-      name: 'Select Field for Conversion',
-      defaultValue: '',
-      description: 'Choose which field to convert',
-      settings: {
-        options: [
-          { value: '', label: 'None' }, // Add other fields dynamically here based on your dataset
-          { value: 'time', label: 'Time' },
-          { value: 'otherField', label: 'Other Field' },  // Example of another field
-        ],
-      },
+    .addBooleanSwitch({
+      path: 'showConstantColumns',
+      name: 'Show Constant Columns',
+      description: 'Toggle to show or hide constant columns',
+      defaultValue: true, // Default to show constant columns
     });
 });

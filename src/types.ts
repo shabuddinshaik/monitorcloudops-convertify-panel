@@ -4,8 +4,8 @@ export type ConversionType = 'binary' | 'hexadecimal' | 'all';
 
 export interface SimpleOptions {
   text: string;
-  conversionType: ConversionType;
-  showOriginalValues: boolean;
-  textColor: string;  // Text color property
-  selectedField: FieldName; // You can keep this if you are using it, or remove it
+  conversionType: string;
+  textColor: string;
+  selectedField: FieldName;  // Use FieldName here
+  showConstantColumns: boolean;
 }

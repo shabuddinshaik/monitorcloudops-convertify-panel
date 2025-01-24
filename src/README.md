@@ -1,50 +1,63 @@
-<!-- This README file is going to be the one displayed on the Grafana.com website for your plugin. Uncomment and replace the content here before publishing.
+# Convertify Panel for Grafana
 
-Remove any remaining comments before publishing as these may be displayed on Grafana.com -->
+**Convertify** is a powerful panel plugin for Grafana designed to help visualize real-time data with detailed bit-level analysis. It integrates with Grafana's time-series data and transforms it into binary or hexadecimal representations. This plugin is perfect for monitoring and analyzing data with bitfield structures, such as industrial systems, IoT devices, or control systems.
 
-# Convertify
+### Features
 
-<!-- To help maximize the impact of your README and improve usability for users, we propose the following loose structure:
+- **Real-time Data Visualization**: Visualizes time-series data from Grafana.
+- **Binary and Hexadecimal Conversion**: Convert numerical values into binary or hexadecimal formats.
+- **Bit-Level Representation**: Show bit-level status using predefined bitfields (e.g., Status, Stop, Emergency Stop).
+- **Column Filtering**: Apply dynamic filters to the columns and analyze data based on specific conditions.
+- **Pagination**: Data is displayed in pages, making it easy to navigate large datasets.
+- **Flexible Data Input**: Works with any time-series data with numerical values.
 
-**BEFORE YOU BEGIN**
-- Ensure all links are absolute URLs so that they will work when the README is displayed within Grafana and Grafana.com
-- Be inspired ✨
-  - [grafana-polystat-panel](https://github.com/grafana/grafana-polystat-panel)
-  - [volkovlabs-variable-panel](https://github.com/volkovlabs/volkovlabs-variable-panel)
+### How It Works
 
-**ADD SOME BADGES**
+The panel works by transforming numerical values into binary or hexadecimal formats and displaying them in a table along with their corresponding bitfield values. 
 
-Badges convey useful information at a glance for users whether in the Catalog or viewing the source code. You can use the generator on [Shields.io](https://shields.io/badges/dynamic-json-badge) together with the Grafana.com API
-to create dynamic badges that update automatically when you publish a new version to the marketplace.
+**Key Concepts:**
+- **Binary Conversion**: Each numerical value is converted into a 32-bit binary representation.
+- **Hex Conversion**: The panel can also convert values into a hexadecimal format.
+- **Bitfields**: Each value is analyzed according to predefined bitfields (e.g., Status, Stop, Fault Stop), where each bit represents a specific status (set or clear).
 
-- For the URL parameter use `https://grafana.com/api/plugins/your-plugin-id`.
-- Example queries:
-  - Downloads: `$.downloads`
-  - Catalog Version: `$.version`
-  - Grafana Dependency: `$.grafanaDependency`
-  - Signature Type: `$.versionSignatureType`
-- Optionally, for the logo parameter use `grafana`.
+### Expected Data Format
 
-Full example: ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?logo=grafana&query=$.version&url=https://grafana.com/api/plugins/grafana-polystat-panel&label=Marketplace&prefix=v&color=F47A20)
+For the plugin to work, you need a time-series dataset that contains both time and numerical fields. Here's an example of the expected data:
 
-Consider other [badges](https://shields.io/badges) as you feel appropriate for your project.
+| Timestamp           | Value |
+|---------------------|-------|
+| 2025-01-01 12:00:00 | 1024  |
+| 2025-01-01 12:01:00 | 2048  |
 
-## Overview / Introduction
-Provide one or more paragraphs as an introduction to your plugin to help users understand why they should use it.
+- **Time**: A field containing timestamp data (required).
+- **Value**: A numerical field representing the data to be visualized (required).
+  
+### Using the Plugin
 
-Consider including screenshots:
-- in [plugin.json](https://grafana.com/developers/plugin-tools/reference/plugin-json#info) include them as relative links.
-- in the README ensure they are absolute URLs.
+1. **Install the Plugin**: Download and install the Convertify panel from the Grafana plugin marketplace.
+2. **Add the Panel to a Dashboard**: Once installed, add the Convertify panel to your dashboard like any other panel.
+3. **Configure the Data Source**: Choose a data source that provides time-series data with numerical values.
+4. **Select Conversion Type**: Choose whether to visualize the data as binary, hexadecimal, or both.
+5. **Use Filters**: Apply filters to view data for specific bitfields.
+6. **Navigate through Pages**: Use the pagination buttons to navigate through large datasets.
 
-## Requirements
-List any requirements or dependencies they may need to run the plugin.
+### Screenshots
 
-## Getting Started
-Provide a quick start on how to configure and use the plugin.
+![Panel Screenshot 1](img/screenshot1.png)
 
-## Documentation
-If your project has dedicated documentation available for users, provide links here. For help in following Grafana's style recommendations for technical documentation, refer to our [Writer's Toolkit](https://grafana.com/docs/writers-toolkit/).
+![Panel Screenshot 2](img/screenshot2.png)
 
-## Contributing
-Do you want folks to contribute to the plugin or provide feedback through specific means? If so, tell them how!
--->
+
+**Example Display**: The table will show the data with columns for the timestamp, value, and additional bit-level fields. 
+
+### Configuration Options
+
+- **Conversion Type**: Choose whether to display the data in binary, hexadecimal, or both formats.
+- **Show Constant Columns**: Toggle to show or hide the bitfield columns for status monitoring.
+- **Column Filters**: Apply filters to narrow down the data based on bitfield values.
+
+### License
+
+This plugin is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+
