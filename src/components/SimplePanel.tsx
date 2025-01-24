@@ -46,10 +46,11 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
     series?.fields.find((field) => field.name === options.selectedField) ||
     series?.fields.find((field) => field.type === 'number');
 
-  if (!timeField || !valueField) {
+  // Check for "No Data" first
+  if (!data || !data.series || data.series.length === 0 || !timeField || !valueField) {
     return (
       <div style={{ width, height, padding: '10px', fontFamily: 'Arial, sans-serif' }}>
-        No valid time or value field found.
+        No Data
       </div>
     );
   }
@@ -74,15 +75,6 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
       ...bitFields,
     };
   });
-
-  // Check if transformed data is empty and display "No Data" message
-  if (transformedData.length === 0) {
-    return (
-      <div style={{ width, height, padding: '10px', fontFamily: 'Arial, sans-serif' }}>
-        No Data
-      </div>
-    );
-  }
 
   const uniqueColumnValues = (column: string) => {
     return [...new Set(transformedData.map((row) => row[column]))];
@@ -114,15 +106,6 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
       [column]: value,
     }));
   };
-
-  // Check for "No Data"
-  if (!data || !data.series || data.series.length === 0) {
-    return (
-      <div style={{ width, height, padding: '10px', fontFamily: 'Arial, sans-serif' }}>
-        No data
-      </div>
-    );
-  }
 
   return (
     <div style={{ width, height, overflow: 'auto', padding: '5px', fontFamily: 'Arial, sans-serif' }}>
