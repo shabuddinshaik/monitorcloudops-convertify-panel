@@ -50,7 +50,7 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
   if (!data || !data.series || data.series.length === 0 || !timeField || !valueField) {
     return (
       <div style={{ width, height, padding: '10px', fontFamily: 'Arial, sans-serif' }}>
-        No Data
+        <div>No Data</div>
       </div>
     );
   }
