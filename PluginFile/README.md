@@ -43,9 +43,9 @@ For the plugin to work, you need a time-series dataset that contains both time a
 
 ### Screenshots
 
-![Panel Screenshot 1](img/screenshot1.png)
+![Panel Screenshot 1] ![alt text](https://github.com/shabuddinshaik/monitorcloudops-convertify-panel/blob/main/src/img/screenshot1.png)
 
-![Panel Screenshot 2](img/screenshot2.png)
+![Panel Screenshot 2] ![alt text](https://github.com/shabuddinshaik/monitorcloudops-convertify-panel/blob/main/src/img/screenshot2.png)
 
 
 **Example Display**: The table will show the data with columns for the timestamp, value, and additional bit-level fields. 
@@ -58,6 +58,6 @@ For the plugin to work, you need a time-series dataset that contains both time a
 
 ### License
 
-This plugin is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+This plugin is licensed under the MIT License. See the [LICENSE](https://github.com/shabuddinshaik/monitorcloudops-convertify-panel/blob/main/LICENSE) file for more details.
 
 
