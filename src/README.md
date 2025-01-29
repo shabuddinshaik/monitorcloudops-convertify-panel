@@ -39,11 +39,11 @@ For the plugin to work, you need a time-series dataset that contains both time a
    ```sh
    git clone https://github.com/shabuddinshaik/monitorcloudops-convertify-panel.git
    cd monitorcloudops-convertify-panel
-   yarn install
+   npm install
    ```
 2. **Build the Plugin**:
    ```sh
-   yarn build
+   npm build
    ```
 3. **Deploy the Plugin**: Copy the built plugin into your Grafana plugins directory.
    ```sh
