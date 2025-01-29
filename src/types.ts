@@ -1,11 +1,8 @@
-type FieldName = string;
-
-export type ConversionType = 'binary' | 'hexadecimal' | 'all';
-
+// types.ts
 export interface SimpleOptions {
-  text: string;
-  conversionType: string;
-  textColor: string;
-  selectedField: FieldName;  // Use FieldName here
+  conversionType: 'binary' | 'hexadecimal' | 'decimal' | 'all';
+  enablePagination: boolean;
   showConstantColumns: boolean;
+  textColor: string;
+  selectedField?: string; // Optional field for selecting a specific field from the data
 }

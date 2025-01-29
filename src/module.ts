@@ -13,14 +13,27 @@ export const plugin = new PanelPlugin<SimpleOptions>(SimplePanel).setPanelOption
         options: [
           { value: 'binary', label: 'Binary' },
           { value: 'hexadecimal', label: 'Hexadecimal' },
+          { value: 'decimal', label: 'Decimal' },
           { value: 'all', label: 'All' },
         ],
       },
     })
     .addBooleanSwitch({
+      path: 'enablePagination',
+      name: 'Enable Pagination',
+      description: 'Enable or disable pagination for the table',
+      defaultValue: true,
+    })
+    .addBooleanSwitch({
       path: 'showConstantColumns',
       name: 'Show Constant Columns',
-      description: 'Toggle to show or hide constant columns',
-      defaultValue: true, // Default to show constant columns
+      description: 'Toggle to show or hide constant columns in the table',
+      defaultValue: true,
+    })
+    .addColorPicker({
+      path: 'textColor',
+      name: 'Text Color',
+      description: 'Choose a color for the table text and header',
+      defaultValue: 'white',
     });
 });
