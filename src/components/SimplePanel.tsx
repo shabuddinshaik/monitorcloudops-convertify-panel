@@ -52,6 +52,12 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
   // Use theme.visualization.getColorByName to resolve theme colors
   const textColor = theme.visualization.getColorByName(options.textColor);
 
+  const textSizeMap = {
+    small: theme.typography.size.sm,
+    medium: theme.typography.size.md,
+    large: theme.typography.size.lg,
+  };
+
   const styles = useStyles2((theme) => ({
     container: css({
       width,
@@ -70,7 +76,7 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
       padding: theme.spacing(1),
       backgroundColor: 'transparent',  // Transparent background
       color: textColor,  // Dynamic text color
-      fontSize: theme.typography.size.sm,
+      fontSize: textSizeMap[options.textSize],
       minWidth: '160px',
       textAlign: 'center',
     }),
@@ -78,6 +84,7 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
       padding: theme.spacing(1),
       border: `1px solid ${textColor}`,
       color: textColor,  // Dynamic text color
+      fontSize: textSizeMap[options.textSize],
     }),
     button: css({
       padding: '5px 8px',
@@ -95,6 +102,7 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
       '& .rdg-cell': {
         backgroundColor: 'transparent !important', // Make cell backgrounds transparent
         color: textColor,  // Dynamic text color
+        fontSize: textSizeMap[options.textSize],
       },
     }),
   }));

@@ -1,39 +1,48 @@
 import { PanelPlugin } from '@grafana/data';
-import { SimpleOptions } from './types';
 import { SimplePanel } from './components/SimplePanel';
+import { SimpleOptions } from './types';
 
 export const plugin = new PanelPlugin<SimpleOptions>(SimplePanel).setPanelOptions((builder) => {
   return builder
-    .addRadio({
-      path: 'conversionType',
-      name: 'Conversion Type',
-      description: 'Select the conversion type for table values',
-      defaultValue: 'binary',
+    .addSelect({
+      path: 'textSize',
+      name: 'Text Size',
+      defaultValue: 'medium',
       settings: {
         options: [
-          { value: 'binary', label: 'Binary' },
-          { value: 'hexadecimal', label: 'Hexadecimal' },
-          { value: 'decimal', label: 'Decimal' },
-          { value: 'all', label: 'All' },
+          { value: 'small', label: 'Small' },
+          { value: 'medium', label: 'Medium' },
+          { value: 'large', label: 'Large' },
         ],
       },
     })
-    .addBooleanSwitch({
-      path: 'enablePagination',
-      name: 'Enable Pagination',
-      description: 'Enable or disable pagination for the table',
-      defaultValue: true,
+    .addFieldNamePicker({
+      path: 'selectedField',
+      name: 'Field',
+      defaultValue: '',
     })
-    .addBooleanSwitch({
-      path: 'showConstantColumns',
-      name: 'Show Constant Columns',
-      description: 'Toggle to show or hide constant columns in the table',
-      defaultValue: true,
+    .addRadio({
+      path: 'conversionType',
+      name: 'Conversion Type',
+      defaultValue: 'all',
+      settings: {
+        options: [
+          { value: 'none', label: 'None' },
+          { value: 'binary', label: 'Binary' },
+          { value: 'hexadecimal', label: 'Hexadecimal' },
+          { value: 'all', label: 'All' },
+        ],
+      },
     })
     .addColorPicker({
       path: 'textColor',
       name: 'Text Color',
       description: 'Choose a color for the table text and header',
       defaultValue: 'white',
+    })
+    .addBooleanSwitch({
+      path: 'showConstantColumns',
+      name: 'Show Constant Columns',
+      defaultValue: true,
     });
 });
