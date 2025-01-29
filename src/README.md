@@ -33,27 +33,6 @@ For the plugin to work, you need a time-series dataset that contains both time a
 - **Time**: A field containing timestamp data (required).
 - **Value**: A numerical field representing the data to be visualized (required).
 
-## Installation
-
-1. **Download the Plugin**: Clone the repository and install dependencies.
-   ```sh
-   git clone https://github.com/shabuddinshaik/monitorcloudops-convertify-panel.git
-   cd monitorcloudops-convertify-panel
-   npm install
-   ```
-2. **Build the Plugin**:
-   ```sh
-   npm build
-   ```
-3. **Deploy the Plugin**: Copy the built plugin into your Grafana plugins directory.
-   ```sh
-   cp -r dist /var/lib/grafana/plugins/convertify-panel
-   ```
-4. **Restart Grafana**:
-   ```sh
-   sudo systemctl restart grafana-server
-   ```
-5. **Enable the Plugin**: Go to Grafana settings and enable the Convertify panel.
 
 ## Using the Plugin
 
