@@ -5,4 +5,5 @@ export interface SimpleOptions {
   showConstantColumns: boolean;
   textColor: string;
   selectedField?: string; // Optional field for selecting a specific field from the data
+  textSize: 'small' | 'medium' | 'large'; 
 }
