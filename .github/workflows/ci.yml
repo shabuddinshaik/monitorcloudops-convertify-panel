@@ -3,14 +3,10 @@ name: CI
 on:
   push:
     branches:
-      - master
       - main
-      - test
   pull_request:
     branches:
-      - master
       - main
-      - test
 
 permissions: read-all
 
