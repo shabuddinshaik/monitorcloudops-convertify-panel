@@ -60,17 +60,4 @@ For the plugin to work, you need a time-series dataset that contains both time a
 
 This plugin is licensed under the MIT License. See the [LICENSE](https://github.com/shabuddinshaik/monitorcloudops-convertify-panel/blob/main/LICENSE) file for more details.
 
-## Contribution
-
-We welcome contributions! If you find a bug or have a feature request, feel free to open an issue or submit a pull request. Follow these steps to contribute:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Make your changes and commit them (`git commit -m 'Added a new feature'`).
-4. Push to the branch (`git push origin feature-branch`).
-5. Open a pull request.
-
----
-
-Thank you for using Convertify! 🚀 If you have any questions, feel free to reach out via GitHub issues.
 
