@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0 (2026-02-21)
+## 2.0.2 (2026-02-21)
 
 - React 19 compatibility support for Grafana 13 readiness.
 - Externalized JSX runtime for plugin loading compatibility.
