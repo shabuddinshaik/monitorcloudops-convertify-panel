@@ -4,7 +4,6 @@ import { SimpleOptions } from '../types';
 import { useStyles2, useTheme } from '@grafana/ui';
 import { css } from '@emotion/css';
 import DataGrid, { Column } from 'react-data-grid';
-import 'react-data-grid/lib/styles.css';
 import { format } from 'date-fns';
 
 interface Props extends PanelProps<SimpleOptions> {}
