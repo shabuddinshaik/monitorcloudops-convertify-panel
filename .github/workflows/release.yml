@@ -24,14 +24,3 @@ jobs:
         with:
           policy_token: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
           attestation: true
-
-      - name: Find built archive
-        id: find-zip
-        run: |
-          ZIP_PATH=$(ls *.zip | head -n 1)
-          echo "zip_path=${ZIP_PATH}" >> "$GITHUB_OUTPUT"
-
-      - name: Generate build provenance
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-path: ${{ steps.find-zip.outputs.zip_path }}
