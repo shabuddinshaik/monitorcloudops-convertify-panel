@@ -13,6 +13,7 @@ Convertify is a Grafana panel plugin for visualizing numeric time-series values 
 ## Requirements
 
 - Node.js `>=18 <=22`
+- Grafana `>=12.3.0`
 - Docker (optional, for local Grafana testing)
 
 ## Local development
@@ -46,6 +47,7 @@ Convertify is a Grafana panel plugin for visualizing numeric time-series values 
 ## React 19 compatibility
 
 The plugin is configured to support Grafana's React 19 runtime preview.
+Because JSX runtime is externalized for React 19 compatibility, Grafana versions older than `12.3.0` are not supported.
 
 Run the compatibility scan locally:
 

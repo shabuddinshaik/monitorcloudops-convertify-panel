@@ -142,6 +142,8 @@ jobs:
         id: resolve-versions
         uses: grafana/plugin-actions/e2e-version@e2e-version/v1.2.1
         with:
+          version-resolver-type: plugin-grafana-dependency
+          grafana-dependency: '>=12.3.0'
           skip-grafana-react-19-preview-image: false
 
   playwright-tests:
