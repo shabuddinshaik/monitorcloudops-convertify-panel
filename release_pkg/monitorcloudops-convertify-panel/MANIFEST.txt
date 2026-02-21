@@ -1,2 +1,0 @@
-plugin = monitorcloudops-convertify-panel
-version = 2.0.0
