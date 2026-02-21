@@ -44,5 +44,10 @@ export const plugin = new PanelPlugin<SimpleOptions>(SimplePanel).setPanelOption
       path: 'showConstantColumns',
       name: 'Show Constant Columns',
       defaultValue: true,
+    })
+    .addBooleanSwitch({
+      path: 'enablePagination',
+      name: 'Enable Pagination',
+      defaultValue: true,
     });
 });

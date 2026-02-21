@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { PanelProps } from '@grafana/data'; // Remove getColorForTheme import
+import React, { useCallback, useMemo, useState } from 'react';
+import { PanelProps } from '@grafana/data';
 import { SimpleOptions } from '../types';
-import { useStyles2, useTheme } from '@grafana/ui'; // Ensure useTheme is imported
+import { useStyles2, useTheme } from '@grafana/ui';
 import { css } from '@emotion/css';
 import DataGrid, { Column } from 'react-data-grid';
 import 'react-data-grid/lib/styles.css';
@@ -29,27 +29,31 @@ const excelColumns = [
 ];
 
 type DataRow = {
-  timestamp: any;
-  value: any;
+  timestamp: string;
+  value: unknown;
   binary?: string;
   hex?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
-  const theme = useTheme(); // Use the useTheme hook to access the current theme
+  const theme = useTheme();
 
-  const timeField = data.series[0]?.fields.find((field) => field.type === 'time');
-  const valueField =
-    data.series[0]?.fields.find((field) => field.name === options.selectedField) ||
-    data.series[0]?.fields.find((field) => field.type === 'number');
+  const firstSeries = data.series[0];
 
-  const toBinary = (value: number, bits = 32): string => value.toString(2).padStart(bits, '0');
-  const toHex = (value: number): string => '0x' + value.toString(16).toUpperCase();
+  const timeField = useMemo(() => firstSeries?.fields.find((field) => field.type === 'time'), [firstSeries]);
+  const valueField = useMemo(
+    () =>
+      firstSeries?.fields.find((field) => field.name === options.selectedField) ||
+      firstSeries?.fields.find((field) => field.type === 'number'),
+    [firstSeries, options.selectedField]
+  );
 
-  // Use theme.visualization.getColorByName to resolve theme colors
+  const toBinary = (value: number, bits = 32): string => (value >>> 0).toString(2).padStart(bits, '0');
+  const toHex = (value: number): string => '0x' + (value >>> 0).toString(16).toUpperCase();
+
   const textColor = theme.visualization.getColorByName(options.textColor);
 
   const textSizeMap = {
@@ -66,130 +70,140 @@ export const SimplePanel: React.FC<Props> = ({ data, options, width, height }) =
       padding: theme.spacing(1),
       fontFamily: theme.typography.fontFamily,
     }),
-    table: css({
-      width: '100%',
-      borderCollapse: 'collapse',
-      textAlign: 'left',
-      fontFamily: theme.typography.fontFamily,
-    }),
-    th: css({
-      padding: theme.spacing(1),
-      backgroundColor: 'transparent',  // Transparent background
-      color: textColor,  // Dynamic text color
-      fontSize: textSizeMap[options.textSize],
-      minWidth: '160px',
-      textAlign: 'center',
-    }),
-    td: css({
-      padding: theme.spacing(1),
-      border: `1px solid ${textColor}`,
-      color: textColor,  // Dynamic text color
-      fontSize: textSizeMap[options.textSize],
-    }),
     button: css({
       padding: '5px 8px',
       backgroundColor: theme.colors.primary.main,
       color: textColor,
       border: 'none',
-      borderRadius: theme.shape.borderRadius(),
+      borderRadius: theme.shape.radius.default,
       '&:disabled': {
         backgroundColor: theme.colors.action.disabledBackground,
         color: theme.colors.action.disabledText,
       },
     }),
     dataGrid: css({
-      backgroundColor: 'transparent !important', // Make the background transparent
+      backgroundColor: 'transparent !important',
       '& .rdg-cell': {
-        backgroundColor: 'transparent !important', // Make cell backgrounds transparent
-        color: textColor,  // Dynamic text color
+        backgroundColor: 'transparent !important',
+        color: textColor,
         fontSize: textSizeMap[options.textSize],
       },
     }),
   }));
 
-  if (!data || !data.series || data.series.length === 0 || !timeField || !valueField) {
-    return (
-      <div className={styles.container}>
-        <div>No data</div>
-      </div>
-    );
-  }
+  const shouldPaginate = options.enablePagination ?? true;
 
-  const timeValues = Array.from(timeField.values);
-  const valueValues = Array.from(valueField.values);
+  const transformedData: DataRow[] = useMemo(() => {
+    if (!timeField || !valueField) {
+      return [];
+    }
 
-  const transformedData: DataRow[] = timeValues.map((time, index) => {
-    const value = valueValues[index];
-    const binaryValue = toBinary(value);
+    const timeValues = Array.from(timeField.values);
+    const valueValues = Array.from(valueField.values);
 
-    const bitFields = excelColumns.reduce((acc, col) => {
-      acc[col.name] = binaryValue[binaryValue.length - 1 - col.bit] || '0';
-      return acc;
-    }, {} as Record<string, string>);
+    return timeValues.map((time, index) => {
+      const value = valueValues[index];
+      const numericValue = Number(value);
+      const hasNumericValue = Number.isFinite(numericValue);
+      const safeNumericValue = hasNumericValue ? numericValue : 0;
+      const binaryValue = toBinary(safeNumericValue);
 
-    return {
-      timestamp: format(new Date(time), 'yyyy-MM-dd HH:mm:ss'),
-      value,
-      binary: options.conversionType === 'binary' || options.conversionType === 'all' ? toBinary(value) : undefined,
-      hex: options.conversionType === 'hexadecimal' || options.conversionType === 'all' ? toHex(value) : undefined,
-      ...bitFields,
-    };
-  });
+      const bitFields = excelColumns.reduce((acc, col) => {
+        acc[col.name] = binaryValue[binaryValue.length - 1 - col.bit] || '0';
+        return acc;
+      }, {} as Record<string, string>);
 
-  const applyColumnFilters = (data: DataRow[]) => {
-    return data;
-  };
+      return {
+        timestamp: format(new Date(time), 'yyyy-MM-dd HH:mm:ss'),
+        value,
+        binary:
+          hasNumericValue && (options.conversionType === 'binary' || options.conversionType === 'all')
+            ? toBinary(safeNumericValue)
+            : undefined,
+        hex:
+          hasNumericValue && (options.conversionType === 'hexadecimal' || options.conversionType === 'all')
+            ? toHex(safeNumericValue)
+            : undefined,
+        ...bitFields,
+      };
+    });
+  }, [options.conversionType, timeField, valueField]);
 
-  const filteredData = applyColumnFilters(
-    transformedData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
+  const totalPages = Math.max(1, Math.ceil(transformedData.length / rowsPerPage));
+  const activePage = shouldPaginate ? Math.min(currentPage, totalPages) : 1;
+
+  const filteredData = useMemo(
+    () =>
+      shouldPaginate
+        ? transformedData.slice((activePage - 1) * rowsPerPage, activePage * rowsPerPage)
+        : transformedData,
+    [activePage, shouldPaginate, transformedData]
   );
 
-  const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
-  };
+  const handlePageChange = useCallback((newPage: number) => {
+    setCurrentPage(Math.min(Math.max(newPage, 1), totalPages));
+  }, [totalPages]);
 
-  const columns: Column<DataRow>[] = [
-    { key: 'timestamp', name: 'Timestamp', resizable: true },
-    { key: 'value', name: 'Value', resizable: true },
-    ...(options.conversionType === 'binary' || options.conversionType === 'all'
-      ? [{ key: 'binary', name: 'Binary', resizable: true }]
-      : []),
-    ...(options.conversionType === 'hexadecimal' || options.conversionType === 'all'
-      ? [{ key: 'hex', name: 'Hex', resizable: true }]
-      : []),
-    ...(options.showConstantColumns
-      ? excelColumns.map((col) => ({ key: col.name, name: col.name, resizable: true }))
-      : []),
-  ];
+  const columns: Array<Column<DataRow>> = useMemo(
+    () => [
+      { key: 'timestamp', name: 'Timestamp', resizable: true },
+      { key: 'value', name: 'Value', resizable: true },
+      ...(options.conversionType === 'binary' || options.conversionType === 'all'
+        ? [{ key: 'binary', name: 'Binary', resizable: true }]
+        : []),
+      ...(options.conversionType === 'hexadecimal' || options.conversionType === 'all'
+        ? [{ key: 'hex', name: 'Hex', resizable: true }]
+        : []),
+      ...(options.showConstantColumns
+        ? excelColumns.map((col) => ({ key: col.name, name: col.name, resizable: true }))
+        : []),
+    ],
+    [options.conversionType, options.showConstantColumns]
+  );
+
+  const hasData = Boolean(data?.series?.length && timeField && valueField);
 
   return (
     <div className={styles.container}>
-      <DataGrid
-        columns={columns}
-        rows={filteredData}
-        rowHeight={30}
-        headerRowHeight={30}
-        onRowsChange={(rows) => {
-          // Handle row changes if needed
-        }}
-        className={styles.dataGrid} // Apply custom styles to make the background transparent
-      />
-      <div style={{ marginTop: '5px', textAlign: 'center' }}>
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className={styles.button}
-        >
-          Previous
-        </button>
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === Math.ceil(transformedData.length / rowsPerPage)}
-          className={styles.button}
-        >
-          Next
-        </button>
-      </div>
+      {!hasData ? (
+        <div>No data</div>
+      ) : (
+        <>
+          <DataGrid
+            columns={columns}
+            rows={filteredData}
+            rowHeight={30}
+            headerRowHeight={30}
+            className={styles.dataGrid}
+            aria-label="Convertify table"
+          />
+          {shouldPaginate && transformedData.length > rowsPerPage && (
+            <div style={{ marginTop: '5px', textAlign: 'center' }}>
+              <span aria-live="polite" style={{ marginRight: '8px' }}>
+                Page {activePage} of {totalPages}
+              </span>
+              <button
+                type="button"
+                onClick={() => handlePageChange(activePage - 1)}
+                disabled={activePage === 1}
+                className={styles.button}
+                aria-label="Go to previous page"
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                onClick={() => handlePageChange(activePage + 1)}
+                disabled={activePage === totalPages}
+                className={styles.button}
+                aria-label="Go to next page"
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };

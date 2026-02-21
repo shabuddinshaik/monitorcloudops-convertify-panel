@@ -1,9 +1,9 @@
 // types.ts
 export interface SimpleOptions {
-  conversionType: 'binary' | 'hexadecimal' | 'decimal' | 'all';
+  conversionType: 'binary' | 'hexadecimal' | 'all';
   enablePagination: boolean;
   showConstantColumns: boolean;
   textColor: string;
-  selectedField?: string; // Optional field for selecting a specific field from the data
-  textSize: 'small' | 'medium' | 'large'; 
+  selectedField?: string;
+  textSize: 'small' | 'medium' | 'large';
 }
